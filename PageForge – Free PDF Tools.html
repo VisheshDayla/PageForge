@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>PageForge – Free PDF Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    :root {
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      --bg: #f6f5f2;
+      --card: #fff;
+      --tx: #1d1d1f;
+      --mut: #6b6b70;
+      --bd: #e3e1dc;
+      --ac: #e5322d;
+      --ac2: #fde8e7
+    }
+
+    @media (prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #161617;
+        --card: #212123;
+        --tx: #f2f2f3;
+        --mut: #a0a0a6;
+        --bd: #35353a;
+        --ac: #ff5a54;
+        --ac2: #3a2221
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #161617;
+      --card: #212123;
+      --tx: #f2f2f3;
+      --mut: #a0a0a6;
+      --bd: #35353a;
+      --ac: #ff5a54;
+      --ac2: #3a2221
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--tx);
+      font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif
+    }
+
+    header {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--bd);
+      background: var(--card)
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 20px;
+      cursor: pointer
+    }
+
+    .logo b {
+      color: var(--ac)
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px 16px 60px
+    }
+
+    h1 {
+      font-size: clamp(26px, 5vw, 38px);
+      text-align: center;
+      margin: 20px 0 6px
+    }
+
+    .sub {
+      text-align: center;
+      color: var(--mut);
+      margin: 0 0 28px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px
+    }
+
+    .tool {
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: 14px;
+      padding: 18px;
+      cursor: pointer;
+      transition: .15s
+    }
+
+    .tool:hover {
+      transform: translateY(-3px);
+      border-color: var(--ac)
+    }
+
+    .tool .i {
+      font-size: 30px
+    }
+
+    .tool h3 {
+      margin: 8px 0 4px;
+      font-size: 17px
+    }
+
+    .tool p {
+      margin: 0;
+      color: var(--mut);
+      font-size: 14px
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: 16px;
+      padding: 22px;
+      max-width: 680px;
+      margin: 0 auto
+    }
+
+    .back {
+      background: none;
+      border: 0;
+      color: var(--mut);
+      cursor: pointer;
+      font-size: 15px;
+      margin-bottom: 10px;
+      padding: 0
+    }
+
+    .drop {
+      border: 2px dashed var(--bd);
+      border-radius: 14px;
+      padding: 34px 16px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--mut)
+    }
+
+    .drop.over,
+    .drop:hover {
+      border-color: var(--ac);
+      background: var(--ac2)
+    }
+
+    .files {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0
+    }
+
+    .files li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      margin-bottom: 6px;
+      font-size: 14px
+    }
+
+    .files .n {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .files button {
+      border: 0;
+      background: none;
+      cursor: pointer;
+      color: var(--mut);
+      font-size: 16px
+    }
+
+    .opts {
+      display: grid;
+      gap: 10px;
+      margin: 14px 0
+    }
+
+    .opts label {
+      display: grid;
+      gap: 4px;
+      font-size: 14px;
+      color: var(--mut)
+    }
+
+    input[type=text],
+    input[type=number],
+    select {
+      padding: 9px 10px;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--tx);
+      font: inherit;
+      width: 100%
+    }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--ac);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: default
+    }
+
+    .msg {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--ac2);
+      font-size: 14px
+    }
+
+    .ok {
+      border: 1px solid var(--ac)
+    }
+
+    .tb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0;
+      align-items: center
+    }
+
+    .tb button {
+      padding: 7px 10px;
+      border: 1px solid var(--bd);
+      background: var(--bg);
+      color: var(--tx);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px
+    }
+
+    .tb button.on {
+      background: var(--ac);
+      color: #fff;
+      border-color: var(--ac)
+    }
+
+    .stage {
+      overflow: auto;
+      max-height: 70vh;
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      background: var(--bg);
+      padding: 10px
+    }
+
+    #cv {
+      display: block;
+      background: #fff
+    }
+
+    #ov {
+      position: absolute;
+      inset: 0;
+      touch-action: none;
+      cursor: crosshair
+    }
+
+    .r,
+    .tx,
+    .ib {
+      position: absolute
+    }
+
+    .r,
+    .tx {
+      pointer-events: none
+    }
+
+    .tx {
+      white-space: pre;
+      line-height: 1
+    }
+
+    .ib {
+      cursor: text;
+      outline: 1px dashed rgba(90, 120, 255, .45)
+    }
+
+    .ib:hover {
+      outline-color: var(--ac);
+      background: rgba(229, 50, 45, .12)
+    }
+
+    .ti {
+      position: absolute;
+      border: 1px solid var(--ac);
+      background: #fff;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+      outline: none
+    }
+
+    .rs {
+      max-height: 150px;
+      overflow: auto;
+      font-size: 14px;
+      color: var(--mut)
+    }
+
+    .rr {
+      padding: 6px 8px;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      margin: 4px 0;
+      cursor: pointer;
+      color: var(--tx)
+    }
+
+    .rr:hover {
+      border-color: var(--ac)
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-left: auto
+    }
+
+    .tabs button {
+      padding: 8px 14px;
+      border: 1px solid var(--bd);
+      background: var(--bg);
+      color: var(--tx);
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px
+    }
+
+    .tabs button.on {
+      background: var(--ac);
+      color: #fff;
+      border-color: var(--ac)
+    }
+
+    #iov {
+      position: absolute;
+      inset: 0;
+      touch-action: none;
+      cursor: crosshair
+    }
+
+    .bx {
+      position: absolute;
+      z-index: 5;
+      border: 2px dashed var(--ac);
+      box-sizing: border-box
+    }
+
+    .bx textarea {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      outline: 0;
+      padding: 0;
+      margin: 0;
+      resize: none;
+      overflow: hidden;
+      background: transparent;
+      display: block
+    }
+
+    .bh {
+      position: absolute;
+      left: -2px;
+      bottom: 100%;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      background: var(--ac);
+      color: #fff;
+      border-radius: 6px 6px 0 0;
+      padding: 2px 6px;
+      font-size: 12px;
+      white-space: nowrap
+    }
+
+    .lo .bh {
+      bottom: auto;
+      top: 100%;
+      border-radius: 0 0 6px 6px
+    }
+
+    .mv {
+      cursor: move;
+      touch-action: none;
+      padding: 3px 8px;
+      user-select: none;
+      font-weight: 700
+    }
+
+    .bh button {
+      border: 0;
+      background: rgba(255, 255, 255, .28);
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 2px 9px;
+      font-size: 13px
+    }
+
+    .rz {
+      position: absolute;
+      right: -8px;
+      bottom: -8px;
+      width: 16px;
+      height: 16px;
+      background: var(--ac);
+      border-radius: 4px;
+      cursor: nwse-resize;
+      touch-action: none
+    }
+
+    .bx.pl {
+      border: 1px dashed var(--ac)
+    }
+
+    .bx.pl textarea {
+      white-space: pre
+    }
+
+    svg.pa {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none
+    }
+  </style>
+</head>
+
+<body>
+  <header><span class="logo" onclick="home()">Page<b>Forge</b></span>
+    <nav class="tabs"><button id="t_pdf" class="on" onclick="setSec('pdf')">📄 PDF Tools</button><button id="t_img"
+        onclick="setSec('img')">🖼️ Image Tools</button></nav>
+  </header>
+  <main id="app"></main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script>
+    const { PDFDocument, StandardFonts, rgb, degrees } = window.PDFLib;
+    try { pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js" } catch (e) { }
+    const $ = s => document.querySelector(s);
+    const load = async f => PDFDocument.load(await f.arrayBuffer(), { ignoreEncryption: true });
+    const kb = n => n > 1048576 ? (n / 1048576).toFixed(2) + " MB" : Math.round(n / 1024) + " KB";
+    // "1-3,5" -> [0,1,2,4]
+    function parse(s, n) { if (!s.trim()) return [...Array(n).keys()]; const o = []; s.split(",").forEach(p => { const [a, b] = p.split("-").map(x => parseInt(x)); if (isNaN(a)) return; for (let i = a; i <= (isNaN(b) ? a : b); i++)if (i >= 1 && i <= n && !o.includes(i - 1)) o.push(i - 1) }); if (!o.length) throw Error("No valid pages in range."); return o }
+    async function render(f, scale, q) {
+      const pdf = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise; const out = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const pg = await pdf.getPage(i), v = pg.getViewport({ scale }), c = document.createElement("canvas"); c.width = v.width; c.height = v.height;
+        await pg.render({ canvasContext: c.getContext("2d"), viewport: v }).promise; const b = await new Promise(r => c.toBlob(r, "image/jpeg", q)); out.push({ b, w: v.width / scale, h: v.height / scale })
+      } return out
+    }
+    const sel = (id, l, o) => `<label>${l}<select id="${id}">${o.map(x => `<option value="${x[0]}">${x[1]}</option>`).join("")}</select></label>`;
+    const txt = (id, l, v = "", p = "") => `<label>${l}<input type="text" id="${id}" value="${v}" placeholder="${p}"></label>`;
+    const v = id => $("#" + id).value;
+    let TOOLS = {
+      merge: { n: "Merge PDF", i: "🧩", d: "Combine PDFs in any order", acc: ".pdf", multi: 1, min: 2, async run(fs) { const o = await PDFDocument.create(); for (const f of fs) { const s = await load(f); (await o.copyPages(s, s.getPageIndices())).forEach(p => o.addPage(p)) } return ["merged.pdf", await o.save()] } },
+      split: {
+        n: "Split PDF", i: "✂️", d: "Extract pages or split every page", acc: ".pdf", opts: txt("rg", "Pages to extract", "", "e.g. 1-3,5 (blank = all)") + sel("mode", "Output", [["one", "One PDF with these pages"], ["each", "Separate PDF per page (ZIP)"]]), async run(fs) {
+          const s = await load(fs[0]), idx = parse(v("rg"), s.getPageCount());
+          if (v("mode") == "one") { const o = await PDFDocument.create(); (await o.copyPages(s, idx)).forEach(p => o.addPage(p)); return ["split.pdf", await o.save()] }
+          const z = new JSZip(); for (const i of idx) { const o = await PDFDocument.create(); o.addPage((await o.copyPages(s, [i]))[0]); z.file(`page-${i + 1}.pdf`, await o.save()) } return ["pages.zip", await z.generateAsync({ type: "uint8array" })]
+        }
+      },
+      remove: { n: "Remove Pages", i: "🗑️", d: "Delete unwanted pages", acc: ".pdf", opts: txt("rg", "Pages to delete", "", "e.g. 2,4-6"), async run(fs) { const s = await load(fs[0]); parse(v("rg"), s.getPageCount()).sort((a, b) => b - a).forEach(i => s.removePage(i)); return ["removed.pdf", await s.save()] } },
+      rotate: { n: "Rotate PDF", i: "🔄", d: "Rotate all or selected pages", acc: ".pdf", opts: sel("ang", "Rotate by", [[90, "90° clockwise"], [180, "180°"], [270, "90° counter-clockwise"]]) + txt("rg", "Pages", "", "blank = all pages"), async run(fs) { const s = await load(fs[0]), P = s.getPages(); parse(v("rg"), P.length).forEach(i => P[i].setRotation(degrees((P[i].getRotation().angle + +v("ang")) % 360))); return ["rotated.pdf", await s.save()] } },
+      numbers: {
+        n: "Page Numbers", i: "🔢", d: "Add page numbers to every page", acc: ".pdf", opts: sel("pos", "Position", [["bc", "Bottom center"], ["br", "Bottom right"], ["bl", "Bottom left"], ["tc", "Top center"]]) + `<label>Start at<input type="number" id="st" value="1"></label>`, async run(fs) {
+          const s = await load(fs[0]), f = await s.embedFont(StandardFonts.Helvetica);
+          s.getPages().forEach((p, i) => { const { width: w, height: h } = p.getSize(), t = String(i + +v("st")), tw = f.widthOfTextAtSize(t, 12), q = v("pos"); const x = q[1] == "c" ? (w - tw) / 2 : q[1] == "r" ? w - tw - 30 : 30, y = q[0] == "b" ? 24 : h - 30; p.drawText(t, { x, y, size: 12, font: f, color: rgb(.2, .2, .2) }) }); return ["numbered.pdf", await s.save()]
+        }
+      },
+      mark: {
+        n: "Watermark", i: "💧", d: "Stamp text across every page", acc: ".pdf", opts: txt("wm", "Watermark text", "CONFIDENTIAL") + `<label>Opacity (0.1 – 1)<input type="number" id="op" value="0.25" step="0.05" min="0.1" max="1"></label>`, async run(fs) {
+          const s = await load(fs[0]), f = await s.embedFont(StandardFonts.HelveticaBold), t = v("wm");
+          s.getPages().forEach(p => { const { width: w, height: h } = p.getSize(), sz = Math.min(w, h) / (t.length * .45 + 2) * 1.4, tw = f.widthOfTextAtSize(t, sz), a = Math.PI / 4; p.drawText(t, { x: w / 2 - Math.cos(a) * tw / 2, y: h / 2 - Math.sin(a) * tw / 2, size: sz, font: f, color: rgb(.5, .5, .5), opacity: +v("op"), rotate: degrees(45) }) }); return ["watermarked.pdf", await s.save()]
+        }
+      },
+      img: {
+        n: "Images to PDF", i: "🖼️", d: "Turn JPG/PNG/WebP into one PDF", acc: "image/*", multi: 1, opts: sel("fit", "Page size", [["img", "Same as image"], ["a4", "A4 (fit image)"]]), async run(fs) {
+          const o = await PDFDocument.create();
+          for (const f of fs) {
+            const bm = await createImageBitmap(f), c = document.createElement("canvas"); c.width = bm.width; c.height = bm.height; c.getContext("2d").drawImage(bm, 0, 0);
+            const im = await o.embedJpg(await (await new Promise(r => c.toBlob(r, "image/jpeg", .92))).arrayBuffer());
+            if (v("fit") == "img") o.addPage([bm.width, bm.height]).drawImage(im, { x: 0, y: 0, width: bm.width, height: bm.height });
+            else { const p = o.addPage([595, 842]), k = Math.min(555 / bm.width, 802 / bm.height), w = bm.width * k, h = bm.height * k; p.drawImage(im, { x: (595 - w) / 2, y: (842 - h) / 2, width: w, height: h }) }
+          } return ["images.pdf", await o.save()]
+        }
+      },
+      tojpg: { n: "PDF to JPG", i: "📷", d: "Save every page as an image (ZIP)", acc: ".pdf", opts: sel("sc", "Quality", [[2, "High (2x)"], [1.5, "Medium"], [1, "Small"]]), async run(fs) { const r = await render(fs[0], +v("sc"), .92), z = new JSZip(); r.forEach((x, i) => z.file(`page-${i + 1}.jpg`, x.b)); return ["pages-jpg.zip", await z.generateAsync({ type: "uint8array" })] } },
+      shrink: {
+        n: "Compress PDF", i: "📉", d: "Reduce file size (best for scans)", acc: ".pdf", opts: sel("lv", "Compression", [["1.5,.7", "Light"], ["1.1,.55", "Recommended"], ["0.8,.4", "Extreme"]]) + `<div style="font-size:13px;color:var(--mut)">Note: pages become images, so text will no longer be selectable.</div>`, async run(fs) {
+          const [sc, q] = v("lv").split(",").map(Number), r = await render(fs[0], sc, q), o = await PDFDocument.create();
+          for (const x of r) { const im = await o.embedJpg(await x.b.arrayBuffer()); o.addPage([x.w, x.h]).drawImage(im, { x: 0, y: 0, width: x.w, height: x.h }) } return ["compressed.pdf", await o.save()]
+        }
+      }
+    };
+    let cur = null, files = [];
+    let SEC = "pdf";
+    function setSec(x) { SEC = x; document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.id == "t_" + x)); home() }
+    function home() { cur = null; files = []; const P = SEC == "pdf"; $("#app").innerHTML = `<h1>${P ? "Every PDF tool you need." : "Every image tool you need."} <span style="color:var(--ac)">Free.</span></h1><p class="sub">No sign-up, no limits, no watermarks. Everything runs privately in your browser.</p><div class="grid">${Object.entries(TOOLS).filter(([k, t]) => (t.sec || "pdf") == SEC).map(([k, t]) => `<div class="tool" onclick="open_('${k}')"><div class="i">${t.i}</div><h3>${t.n}</h3><p>${t.d}</p></div>`).join("")}</div>` }
+    function open_(k) {
+      cur = k; files = []; const t = TOOLS[k]; if (t.custom) return t.custom == 2 ? imgEditor() : editor(); $("#app").innerHTML = `<div class="panel"><button class="back" onclick="home()">← All tools</button><h2 style="margin:0 0 14px">${t.i} ${t.n}</h2>
+<div class="drop" id="dz">Click to choose ${t.multi ? "files" : "a file"} or drop here<input type="file" id="fi" hidden accept="${t.acc}" ${t.multi ? "multiple" : ""}></div>
+<ul class="files" id="fl"></ul><div class="opts">${t.opts || ""}</div><button class="btn" id="go" disabled>${t.n}</button><div id="out"></div></div>`;
+      const dz = $("#dz"), fi = $("#fi"); dz.onclick = () => fi.click(); fi.onchange = () => add(fi.files);
+      dz.ondragover = e => { e.preventDefault(); dz.classList.add("over") }; dz.ondragleave = () => dz.classList.remove("over"); dz.ondrop = e => { e.preventDefault(); dz.classList.remove("over"); add(e.dataTransfer.files) };
+      $("#go").onclick = run
+    }
+    function add(l) { const t = TOOLS[cur]; files = t.multi ? files.concat([...l]) : [l[0]]; list() }
+    function list() { const t = TOOLS[cur]; $("#fl").innerHTML = files.map((f, i) => `<li><span class="n">📄 ${f.name}</span><span style="color:var(--mut)">${kb(f.size)}</span>${t.multi ? `<button onclick="mv(${i},-1)">↑</button><button onclick="mv(${i},1)">↓</button>` : ""}<button onclick="files.splice(${i},1);list()">✕</button></li>`).join(""); $("#go").disabled = files.length < (t.min || 1) }
+    function mv(i, d) { const j = i + d; if (j < 0 || j >= files.length) return;[files[i], files[j]] = [files[j], files[i]]; list() }
+    async function run() {
+      const t = TOOLS[cur], b = $("#go"), o = $("#out"); b.disabled = true; b.textContent = "Working…"; o.innerHTML = "";
+      try {
+        const [name, data] = await t.run(files), before = files.reduce((a, f) => a + f.size, 0);
+        o.innerHTML = `<div class="msg ok">✅ Done! ${name} · ${kb(data.length)} <span style="color:var(--mut)">(input ${kb(before)})</span><br><br><button class="btn" id="dl">⬇ Download ${name}</button></div>`;
+        $("#dl").onclick = async () => {
+          const d = await claude.use("downloads"); if (!d) { o.insertAdjacentHTML("beforeend", `<div class="msg">Downloads aren't available in this view.</div>`); return }
+          try { await d.save({ filename: name, data }) } catch (e) { if (e.code != "declined") o.insertAdjacentHTML("beforeend", `<div class="msg">Could not save: ${e.message}</div>`) }
+        }
+      }
+      catch (e) { o.innerHTML = `<div class="msg">⚠️ ${e.message || e}</div>` }
+      b.disabled = false; b.textContent = t.n
+    }
+    TOOLS = { edit: { n: "Edit PDF", i: "✏️", d: "Edit existing text (auto font match), add text, draw/sign, highlight, whiteout, redact", custom: 1 }, ...TOOLS };
+    const FAM = ['Helvetica,Arial,sans-serif', '"Times New Roman",Times,serif', '"Courier New",monospace'];
+    const SF = StandardFonts, FN = [[SF.Helvetica, SF.HelveticaBold, SF.HelveticaOblique, SF.HelveticaBoldOblique], [SF.TimesRoman, SF.TimesRomanBold, SF.TimesRomanItalic, SF.TimesRomanBoldItalic], [SF.Courier, SF.CourierBold, SF.CourierOblique, SF.CourierBoldOblique]];
+    const esc = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    const hx = a => "#" + a.map(v => v.toString(16).padStart(2, "0")).join("");
+    const hexc = c => { const n = parseInt(c.slice(1), 16); return rgb((n >> 16) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255) };
+    function matchFont(n) { const sans = /sans/.test(n); return { fam: /courier|mono|consolas|menlo/.test(n) ? 2 : (!sans && /times|serif|georgia|garamond|minion|palatino|cambria|book/.test(n)) ? 1 : 0, b: /bold|black|heavy|semibold|demi/.test(n), i: /italic|oblique/.test(n) } }
+    const flushBox = () => document.querySelectorAll(".bx").forEach(b => b.flush && b.flush());
+    function wrap(str, maxW, m) { const out = []; str.split("\n").forEach(p => { let l = ""; p.split(" ").forEach(w => { const t = l ? l + " " + w : w; if (l && m(t) > maxW) { out.push(l); l = w } else l = t }); out.push(l) }); return out }
+    // Text box. Normal: movable + resizable (Add text). o.plain: fixed inline editor (Edit text), Enter applies, Esc cancels.
+    function tbox(host, g, o) {
+      const P = !!o.plain, b = document.createElement("div"); b.className = "bx" + (g.y < 30 ? " lo" : "") + (P ? " pl" : ""); Object.assign(b.style, { left: g.x + "px", top: g.y + "px", width: g.w + "px", height: g.h + "px", background: o.bg || "transparent" });
+      b.innerHTML = (P ? "" : '<div class="bh"><span class="mv">✥ Move</span><button class="ok" title="Apply">✓</button><button class="no" title="Cancel">✕</button></div>') + '<textarea spellcheck="false"></textarea>' + (P ? "" : '<i class="rz" title="Resize"></i>');
+      const t = b.querySelector("textarea"); t.style.font = o.css; t.style.lineHeight = "1.2"; t.style.color = o.color; t.value = o.str || ""; if (P) t.wrap = "off";
+      let fin = 0; const done = ok => { if (fin) return; fin = 1; const r = { x: b.offsetLeft, y: b.offsetTop, w: b.offsetWidth, h: b.offsetHeight }, v = t.value; b.remove(); if (ok && v.trim()) o.ok(v, r); else if (o.cancel) o.cancel() }; b.flush = () => done(1);
+      if (!P) {
+        const drag = (el, f) => { el.onpointerdown = e => { e.preventDefault(); e.stopPropagation(); el.setPointerCapture(e.pointerId); const sx = e.clientX, sy = e.clientY, x0 = b.offsetLeft, y0 = b.offsetTop, w0 = b.offsetWidth, h0 = b.offsetHeight; el.onpointermove = ev => f(ev.clientX - sx, ev.clientY - sy, x0, y0, w0, h0) }; el.onpointerup = () => { el.onpointermove = null } };
+        drag(b.querySelector(".mv"), (dx, dy, x0, y0) => { b.style.left = x0 + dx + "px"; b.style.top = y0 + dy + "px" }); drag(b.querySelector(".rz"), (dx, dy, x0, y0, w0, h0) => { b.style.width = Math.max(50, w0 + dx) + "px"; b.style.height = Math.max(26, h0 + dy) + "px" });
+        b.querySelector(".ok").onclick = () => done(1); b.querySelector(".no").onclick = () => done(0)
+      } else t.onblur = () => done(1);
+      t.onkeydown = e => { if (e.key == "Escape") done(0); if (e.key == "Enter" && (P ? !e.shiftKey : (e.ctrlKey || e.metaKey))) { e.preventDefault(); done(1) } };
+      host.append(b); setTimeout(() => t.focus(), 0)
+    }
+    let E;
+    function editor() {
+      $("#app").innerHTML = `<div class="panel" style="max-width:900px"><button class="back" onclick="home()">← All tools</button><h2 style="margin:0 0 12px">✏️ Edit PDF</h2><div class="drop" id="dz">Click to choose a PDF or drop here<input type="file" id="fi" hidden accept=".pdf"></div><div id="ed"></div></div>`;
+      const dz = $("#dz"), fi = $("#fi"); dz.onclick = () => fi.click(); fi.onchange = () => openEd(fi.files[0]); dz.ondragover = e => e.preventDefault(); dz.ondrop = e => { e.preventDefault(); openEd(e.dataTransfer.files[0]) }
+    }
+    async function openEd(f) {
+      if (!f) return; $("#dz").style.display = "none"; const buf = await f.arrayBuffer();
+      E = { f, buf, pdf: await pdfjsLib.getDocument({ data: buf.slice(0) }).promise, n: 1, sc: 1.4, ops: [], g: 0, mode: "text", items: [], done: {} };
+      $("#ed").innerHTML = `<div class="tb">${[["text", "✏️ Edit text"], ["add", "🅰️ Add text"], ["hl", "🖍️ Highlight"], ["draw", "✍️ Draw / Sign"], ["white", "⬜ Whiteout"], ["redact", "⬛ Redact"], ["box", "▭ Box"]].map(m => `<button data-m="${m[0]}" class="${m[0] == "text" ? "on" : ""}">${m[1]}</button>`).join("")}</div>
+ <div class="tb"><input type="text" id="fq" placeholder="Find text (exact or similar)…" style="flex:2;min-width:150px"><input type="text" id="rq" placeholder="Replace with (optional)" style="flex:2;min-width:150px"><button id="fb">🔍 Find</button><button id="ra">Replace all exact</button></div><div id="rs" class="rs">Tip: Edit text — click a dotted line, type, press Enter. Add text — drops a box you can move (✥) and resize (corner); ✓ applies, and you can click added text again to move it.</div>
+ <div class="tb"><input type="color" id="col" value="#000000"><label>Size <input type="number" id="fs" value="14" style="width:64px"></label><button id="un">↩ Undo</button><span style="flex:1"></span><button id="pv">◀</button><span id="pn"></span><button id="nx">▶</button></div>
+ <div class="stage"><div id="pg" style="position:relative;margin:auto"><canvas id="cv"></canvas><div id="ov"></div></div></div><button class="btn" id="sv" style="margin-top:14px">Save edited PDF</button><div id="out"></div>`;
+      document.querySelectorAll(".tb [data-m]").forEach(b => b.onclick = () => { flushBox(); E.mode = b.dataset.m; document.querySelectorAll(".tb [data-m]").forEach(x => x.classList.toggle("on", x == b)); paint() });
+      $("#pv").onclick = () => { flushBox(); if (E.n > 1) { E.n--; showPage() } }; $("#nx").onclick = () => { flushBox(); if (E.n < E.pdf.numPages) { E.n++; showPage() } };
+      $("#un").onclick = () => { flushBox(); if (!E.ops.length) return; const g = E.ops[E.ops.length - 1].g; E.ops = E.ops.filter(x => x.g != g); for (const k in E.done) if (E.done[k] == g) delete E.done[k]; paint() };
+      $("#ov").onpointerdown = down; $("#fb").onclick = find; $("#fq").onkeydown = e => { if (e.key == "Enter") find() }; $("#ra").onclick = repAll; $("#rs").onclick = e => { const d = e.target.closest(".rr"); if (d) goTo(E.res[d.dataset.k]) }; $("#sv").onclick = save; showPage()
+    }
+    async function showPage() {
+      const pg = await E.pdf.getPage(E.n), vp = pg.getViewport({ scale: E.sc }), c = $("#cv"); c.width = vp.width; c.height = vp.height; $("#pg").style.width = vp.width + "px";
+      await pg.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise; E.pw = vp.width / E.sc; $("#pn").textContent = `Page ${E.n} / ${E.pdf.numPages}`;
+      E.items = await getLines(E.n); paint()
+    }
+    function paint() {
+      const s = E.sc, P = E.n; let h = "", sv = "";
+      E.ops.forEach((x, ix) => {
+        if (x.p != P) return; if (x.t == "rect") h += `<div class="r" style="left:${x.x * s}px;top:${x.y * s}px;width:${x.w * s}px;height:${x.h * s}px;${x.k == "box" ? `border:2px solid ${x.c}` : `background:${x.c}`};${x.k == "hl" ? "opacity:.35;mix-blend-mode:multiply" : ""}"></div>`;
+        else if (x.t == "text") h += `<div class="tx" data-o="${ix}" style="left:${x.x * s}px;top:${x.y * s}px;width:${x.w * s}px;font-size:${x.size * s}px;line-height:1.2;white-space:pre-wrap;font-family:${FAM[x.f.fam]};font-weight:${x.f.b ? 700 : 400};font-style:${x.f.i ? "italic" : "normal"};color:${x.c};pointer-events:${(E.mode == "add" && !x.ed) || (E.mode == "text" && x.ed) ? "auto" : "none"};cursor:move">${esc(x.str)}</div>`;
+        else sv += `<polyline points="${x.pts.map(q => q[0] * s + "," + q[1] * s).join(" ")}" fill="none" stroke="${x.c}" stroke-width="${x.w * s}" stroke-linecap="round" stroke-linejoin="round"/>`
+      });
+      if (E.mode == "text") E.items.forEach(it => { if (!E.done[P + "_" + it.i]) h += `<div class="ib" data-i="${it.i}" style="left:${it.x * s}px;top:${(it.y - it.size * .9) * s}px;width:${it.w * s}px;height:${it.size * 1.2 * s}px"></div>` });
+      $("#ov").innerHTML = h + `<svg class="pa">${sv}</svg>`
+    }
+    function inp(x, top, w, size, f, c, bg, str, cb, cn, h, pl) { const s = E.sc; tbox($("#pg"), { x: x * s, y: Math.max(0, top * s), w: Math.max(80, w * s), h: Math.max((h || size * 1.4) * s, 30) }, { str, css: `${f.i ? "italic " : ""}${f.b ? "bold " : ""}${size * s}px ${FAM[f.fam]}`, color: c, bg, plain: pl, ok: (v, r) => { cb(v, { x: r.x / s, y: r.y / s, w: r.w / s, h: r.h / s }) }, cancel: cn }) }
+    function reopen(ix) { const x = E.ops[ix]; if (!x || x.t != "text") return; E.ops.splice(ix, 1); paint(); inp(x.x, x.y, x.w, x.size, x.f, x.c, "transparent", x.str, (v, r) => { E.ops.push({ ...x, str: v, x: r.x, y: r.y, w: r.w, h: r.h }); paint() }, () => { E.ops.splice(ix, 0, x); paint() }, x.h, x.ed) }
+    function sample(it) {
+      const s = E.sc, c = $("#cv"), ctx = c.getContext("2d"), bx = Math.min(c.width - 1, Math.max(0, Math.floor(it.x * s))), by = Math.min(c.height - 1, Math.max(0, Math.floor((it.y - it.size) * s))), bw = Math.max(1, Math.min(Math.ceil(it.w * s), c.width - bx)), bh = Math.max(1, Math.min(Math.ceil(it.size * 1.25 * s), c.height - by));
+      const d = ctx.getImageData(bx, by, bw, bh).data, b0 = [d[0], d[1], d[2]]; let best = 0, tc = [0, 0, 0];
+      for (let k = 0; k < d.length; k += 4) { const m = Math.abs(d[k] - b0[0]) + Math.abs(d[k + 1] - b0[1]) + Math.abs(d[k + 2] - b0[2]); if (m > best) { best = m; tc = [d[k], d[k + 1], d[k + 2]] } }
+      return { bg: hx(b0), col: best > 60 ? hx(tc) : "#000000" }
+    }
+    function commit(it, v, r) { const { bg, col } = sample(it), g = ++E.g, w = r ? r.w : Math.max(it.w + it.size * 3, E.pw - it.x - 4); E.ops.push({ g, p: E.n, t: "rect", k: "cover", x: it.x - 1, y: it.y - it.size * .95, w: it.w + 4, h: it.size * 1.3, c: bg }, { g, p: E.n, t: "text", x: r ? r.x : it.x, y: r ? r.y : it.y - it.size * .95, w, h: r ? r.h : it.size * 1.3, size: it.size, f: it.font, c: col, str: v, ed: 1 }); E.done[E.n + "_" + it.i] = g }
+    function editItem(it, pre) { const { bg, col } = sample(it); inp(it.x, it.y - it.size * .95, Math.max(it.w + it.size * 3, E.pw - it.x - 10), it.size, it.font, col, bg, pre ?? it.str, (v, r) => { commit(it, v, r); paint() }, null, it.size * 1.3, 1) }
+    async function getLines(n) {
+      const pg = await E.pdf.getPage(n), vp = pg.getViewport({ scale: E.sc }), ct = await pg.getTextContent(), s = E.sc;
+      const its = ct.items.filter(i => i.str.trim()).map(it => { const t = pdfjsLib.Util.transform(vp.transform, it.transform); let nm = ""; try { nm = pg.commonObjs.get(it.fontName).name || "" } catch (e) { } nm = (nm + " " + (ct.styles[it.fontName]?.fontFamily || "")).toLowerCase(); return { str: it.str, x: t[4] / s, y: t[5] / s, w: it.width, size: Math.hypot(t[0], t[1]) / s, font: matchFont(nm) } });
+      const rows = []; its.forEach(it => { const r = rows.find(r => Math.abs(r.y - it.y) < it.size * .4); r ? r.p.push(it) : rows.push({ y: it.y, p: [it] }) }); rows.sort((a, b) => a.y - b.y); const out = [];
+      rows.forEach(r => { r.p.sort((a, b) => a.x - b.x); let cur = null; r.p.forEach(p => { const gap = cur ? p.x - (cur.x + cur.w) : 0; if (cur && gap < p.size * 2) { cur.str += (gap > p.size * .2 && !/\s$/.test(cur.str) && !/^\s/.test(p.str) ? " " : "") + p.str; cur.w = p.x + p.w - cur.x } else { cur = { ...p }; out.push(cur) } }) });
+      out.forEach((l, i) => l.i = i); return out
+    }
+    function fz(q, t) { const m = q.length, n = t.length; let prev = new Array(n + 1).fill(0); for (let i = 1; i <= m; i++) { const c = [i]; for (let j = 1; j <= n; j++)c[j] = Math.min(prev[j] + 1, c[j - 1] + 1, prev[j - 1] + (q[i - 1] == t[j - 1] ? 0 : 1)); prev = c } return 1 - Math.min(...prev) / m }
+    const rx = q => new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"), "ig");
+    async function find() {
+      const q = $("#fq").value.trim().toLowerCase().replace(/\s+/g, " "); if (!q) return; const rs = $("#rs"), res = []; rs.textContent = "Searching…";
+      for (let n = 1; n <= E.pdf.numPages; n++)(await getLines(n)).forEach(l => { const t = l.str.toLowerCase().replace(/\s+/g, " "), sc = t.includes(q) ? 1 : fz(q, t); if (sc >= .6) res.push({ n, i: l.i, str: l.str, sc }) });
+      res.sort((a, b) => b.sc - a.sc || a.n - b.n); E.res = res;
+      rs.innerHTML = res.length ? res.slice(0, 60).map((r, k) => `<div class="rr" data-k="${k}"><b>${r.sc == 1 ? "Exact" : Math.round(r.sc * 100) + "% similar"}</b> · page ${r.n} · ${esc(r.str.slice(0, 100))}</div>`).join("") : "No matching text found. Try fewer words — or this may be a scanned PDF (no real text layer)."; return res
+    }
+    async function goTo(r) {
+      E.n = r.n; await showPage(); const it = E.items[r.i]; if (!it) return; $(".stage").scrollTop = Math.max(0, it.y * E.sc - 120);
+      const q = $("#fq").value.trim(), rp = $("#rq").value; let pre; if (rp) { const re = rx(q); pre = re.test(it.str) ? it.str.replace(rx(q), rp) : rp } editItem(it, pre)
+    }
+    async function repAll() {
+      const rp = $("#rq").value, res = await find(); if (!res) return; const ex = res.filter(r => r.sc == 1); if (!ex.length) { $("#rs").textContent = "No exact matches to replace — click a similar match to edit it instead."; return }
+      const q = $("#fq").value.trim(); let c = 0; for (const n of [...new Set(ex.map(r => r.n))]) { E.n = n; await showPage(); for (const r of ex.filter(r => r.n == n)) { const it = E.items[r.i]; if (it && !E.done[n + "_" + it.i]) { commit(it, it.str.replace(rx(q), rp)); c++ } } }
+      paint(); $("#rs").textContent = `Replaced in ${c} line(s). Check the pages, then click Save.`
+    }
+    function down(e) {
+      flushBox(); const ov = $("#ov"), r = ov.getBoundingClientRect(), X = (e.clientX - r.left) / E.sc, Y = (e.clientY - r.top) / E.sc, m = E.mode, col = $("#col").value;
+      const tx = e.target.closest(".tx"); if (tx && (m == "text" || m == "add")) { e.preventDefault(); return reopen(+tx.dataset.o) }
+      if (m == "text") { e.preventDefault(); const b = e.target.closest(".ib"); if (b) editItem(E.items[b.dataset.i]); return }
+      if (m == "add") { const sz = +$("#fs").value || 14, f = { fam: 0, b: 0, i: 0 }; e.preventDefault(); inp(X, Y, 240 / E.sc, sz, f, col, "transparent", "", (v, r) => { E.ops.push({ g: ++E.g, p: E.n, t: "text", x: r.x, y: r.y, w: r.w, h: r.h, size: sz, f, c: col, str: v }); paint() }); return }
+      const g = ++E.g; let op;
+      if (m == "draw") op = { g, p: E.n, t: "path", c: col, w: 2.5, pts: [[X, Y]] };
+      else { const k = { hl: "hl", white: "cover", redact: "redact", box: "box" }[m]; op = { g, p: E.n, t: "rect", k, x: X, y: Y, w: 0, h: 0, x0: X, y0: Y, c: k == "hl" ? "#ffe600" : k == "cover" ? "#ffffff" : k == "redact" ? "#000000" : col } }
+      E.ops.push(op); ov.setPointerCapture(e.pointerId);
+      ov.onpointermove = ev => { const x = (ev.clientX - r.left) / E.sc, y = (ev.clientY - r.top) / E.sc; if (op.t == "path") op.pts.push([x, y]); else { op.x = Math.min(x, op.x0); op.y = Math.min(y, op.y0); op.w = Math.abs(x - op.x0); op.h = Math.abs(y - op.y0) } paint() };
+      ov.onpointerup = () => { ov.onpointermove = ov.onpointerup = null; if ((op.t == "rect" && op.w < 2) || (op.t == "path" && op.pts.length < 2)) E.ops.splice(E.ops.indexOf(op), 1); paint() }
+    }
+    async function save() {
+      flushBox(); const b = $("#sv"), o = $("#out"); b.disabled = true; b.textContent = "Saving…"; o.innerHTML = "";
+      try {
+        const doc = await PDFDocument.load(E.buf.slice(0), { ignoreEncryption: true }), fc = {};
+        const gf = async f => { const k = f.fam * 4 + (f.b ? 1 : 0) + (f.i ? 2 : 0); return fc[k] || (fc[k] = await doc.embedFont(FN[f.fam][(f.b ? 1 : 0) + (f.i ? 2 : 0)])) };
+        for (const p of [...new Set(E.ops.filter(x => x.k == "redact").map(x => x.p))]) { // true redaction: flatten page so hidden text is destroyed
+          const pg = await E.pdf.getPage(p), vp = pg.getViewport({ scale: 2 }), c = document.createElement("canvas"); c.width = vp.width; c.height = vp.height; const cx = c.getContext("2d");
+          await pg.render({ canvasContext: cx, viewport: vp }).promise; cx.fillStyle = "#000"; E.ops.filter(x => x.k == "redact" && x.p == p).forEach(x => cx.fillRect(x.x * 2, x.y * 2, x.w * 2, x.h * 2));
+          const im = await doc.embedJpg(await (await new Promise(r => c.toBlob(r, "image/jpeg", .92))).arrayBuffer()), { width: W, height: H } = doc.getPage(p - 1).getSize();
+          doc.removePage(p - 1); doc.insertPage(p - 1, [W, H]).drawImage(im, { x: 0, y: 0, width: W, height: H })
+        }
+        for (const x of E.ops) {
+          const pg = doc.getPage(x.p - 1), H = pg.getSize().height, c = hexc(x.c);
+          if (x.t == "text") { const f = await gf(x.f); wrap(x.str, x.w, t => f.widthOfTextAtSize(t, x.size)).forEach((l, i) => pg.drawText(l, { x: x.x, y: H - (x.y + x.size * .95 + i * x.size * 1.2), size: x.size, font: f, color: c })) }
+          else if (x.t == "rect") pg.drawRectangle(x.k == "box" ? { x: x.x, y: H - x.y - x.h, width: x.w, height: x.h, borderColor: c, borderWidth: 1.5 } : { x: x.x, y: H - x.y - x.h, width: x.w, height: x.h, color: c, opacity: x.k == "hl" ? .35 : 1 });
+          else for (let i = 1; i < x.pts.length; i++)pg.drawLine({ start: { x: x.pts[i - 1][0], y: H - x.pts[i - 1][1] }, end: { x: x.pts[i][0], y: H - x.pts[i][1] }, thickness: x.w, color: c, lineCap: 1 })
+        }
+        const data = await doc.save();
+        o.innerHTML = `<div class="msg ok">✅ Done! edited.pdf · ${kb(data.length)}<br><br><button class="btn" id="dl">⬇ Download edited.pdf</button></div>`;
+        $("#dl").onclick = async () => {
+          const d = await claude.use("downloads"); if (!d) { o.insertAdjacentHTML("beforeend", `<div class="msg">Downloads aren't available in this view.</div>`); return }
+          try { await d.save({ filename: "edited.pdf", data }) } catch (e) { if (e.code != "declined") o.insertAdjacentHTML("beforeend", `<div class="msg">Could not save: ${e.message}</div>`) }
+        }
+      }
+      catch (e) { o.innerHTML = `<div class="msg">⚠️ ${/encode/i.test(e.message) ? "Some characters aren't supported by the matched standard font (Latin characters only). " + e.message : e.message}</div>` }
+      b.disabled = false; b.textContent = "Save edited PDF"
+    }
+    const num = (id, l, val = "", x = "") => `<label>${l}<input type="number" id="${id}" value="${val}" ${x}></label>`, clr = (id, l, val) => `<label>${l}<input type="color" id="${id}" value="${val}" style="width:100%;height:38px"></label>`;
+    const mk = (w, h) => { const c = document.createElement("canvas"); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c };
+    const kt = f => f.type == "image/png" || f.type == "image/webp" ? f.type : "image/jpeg", ext = t => t.split("/")[1].replace("jpeg", "jpg"), tb = (c, t, q) => new Promise(r => c.toBlob(r, t, q));
+    const draw = (bm, t, w = bm.width, h = bm.height) => { const c = mk(w, h), x = c.getContext("2d"); if (t == "image/jpeg") { x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height) } x.imageSmoothingQuality = "high"; x.drawImage(bm, 0, 0, c.width, c.height); return c };
+    const IMG = proc => async fs => {
+      const r = []; for (const f of fs) { const bm = await createImageBitmap(f), o = await proc(bm, f), b = o.b || await tb(o.c, o.t, o.q); r.push([f.name.replace(/\.[^.]+$/, "") + (o.s || "") + "." + (o.e || ext(o.t)), new Uint8Array(await b.arrayBuffer())]) }
+      if (r.length == 1) return r[0]; const z = new JSZip(); r.forEach(x => z.file(x[0], x[1])); return ["images.zip", await z.generateAsync({ type: "uint8array" })]
+    };
+    async function ico(bm) { const s = Math.min(256, Math.max(bm.width, bm.height)), c = mk(s, s), k = Math.min(s / bm.width, s / bm.height); c.getContext("2d").drawImage(bm, (s - bm.width * k) / 2, (s - bm.height * k) / 2, bm.width * k, bm.height * k); const p = new Uint8Array(await (await tb(c, "image/png")).arrayBuffer()), h = new DataView(new ArrayBuffer(22)), d = s > 255 ? 0 : s; h.setUint16(2, 1, true); h.setUint16(4, 1, true); h.setUint8(6, d); h.setUint8(7, d); h.setUint16(10, 1, true); h.setUint16(12, 32, true); h.setUint32(14, p.length, true); h.setUint32(18, 22, true); return new Blob([h.buffer, p], { type: "image/x-icon" }) }
+    function sharpen(c, a) {
+      if (!a) return; const x = c.getContext("2d"), id = x.getImageData(0, 0, c.width, c.height), d = id.data, o = new Uint8ClampedArray(d), w = c.width, h = c.height;
+      for (let y = 1; y < h - 1; y++)for (let i = 1; i < w - 1; i++) { const k = (y * w + i) * 4; for (let j = 0; j < 3; j++)d[k + j] = o[k + j] + a * (4 * o[k + j] - o[k + j - 4] - o[k + j + 4] - o[k + j - w * 4] - o[k + j + w * 4]) } x.putImageData(id, 0, 0)
+    }
+    const PRE = [["", "Custom size"], ["35,45,mm", "Passport photo 35×45 mm"], ["2,2,in", "US passport 2×2 in"], ["50,20,mm", "Signature 50×20 mm"], ["21,29.7,cm", "A4 paper"], ["600,600,px", "600×600 px"], ["1080,1080,px", "Instagram 1080×1080"], ["500,500,px", "WhatsApp DP 500×500"], ["2560,1440,px", "YouTube banner"]];
+    function pre(x) { if (!x) return; const [a, b, u] = x.split(","); $("#rw").value = a; $("#rh").value = b; $("#ru").value = u }
+    const FMT = [["image/png", "PNG"], ["image/jpeg", "JPG"], ["image/webp", "WebP"]], hint = t => `<div style="font-size:13px;color:var(--mut)">${t}</div>`;
+    const IT = {
+      iedit: { sec: "img", n: "Image Editor", i: "🪄", d: "Edit text inside images, add text, pixelate, erase, draw", custom: 2 },
+      conv: { sec: "img", n: "Convert Image", i: "🔁", d: "JPG, PNG, WebP, ICO (batch supported)", acc: "image/*", multi: 1, opts: sel("fmt", "Convert to", FMT.concat([["ico", "ICO (icon)"]])) + num("q", "Quality (JPG/WebP)", 92, 'min="10" max="100"'), run: IMG(async bm => v("fmt") == "ico" ? { b: await ico(bm), e: "ico" } : { c: draw(bm, v("fmt")), t: v("fmt"), q: +v("q") / 100 }) },
+      comp: {
+        sec: "img", n: "Compress Image", i: "📦", d: "Shrink to a target size in KB, or by quality", acc: "image/*", multi: 1, opts: sel("fmt", "Output", FMT.slice(1)) + num("tk", "Target size in KB (optional)", "", "placeholder='e.g. 50'") + sel("q", "…or quality", [[.8, "Good"], [.6, "Smaller"], [.4, "Smallest"]]), run: IMG(async bm => {
+          const t = v("fmt"), tg = +v("tk") * 1024; if (!tg) return { c: draw(bm, t), t, q: +v("q"), s: "-small" }; let sc = 1;
+          for (let k = 0; k < 8; k++) { const c = draw(bm, t, bm.width * sc, bm.height * sc); let lo = .05, hi = .95, best = null; for (let i = 0; i < 7; i++) { const m = (lo + hi) / 2, b = await tb(c, t, m); if (b.size <= tg) { best = b; lo = m } else hi = m } if (best) return { b: best, t, s: "-" + v("tk") + "kb" }; sc *= .8 } throw Error("Couldn't reach that size. Try a larger target.")
+        })
+      },
+      rsz: {
+        sec: "img", n: "Resize Image", i: "📐", d: "By pixel, cm, mm or inch · passport, social & ID presets", acc: "image/*", multi: 1, opts: `<label>Preset<select onchange="pre(this.value)">${PRE.map(x => `<option value="${x[0]}">${x[1]}</option>`).join("")}</select></label>` + num("rw", "Width") + num("rh", "Height") + sel("ru", "Unit", [["px", "pixels"], ["cm", "cm"], ["mm", "mm"], ["in", "inches"]]) + num("rd", "DPI (for cm/mm/in)", 300) + sel("rm", "When both set", [["fill", "Fill & crop (no distortion)"], ["fit", "Fit inside"], ["stretch", "Stretch"]]) + hint("Leave one side empty to keep the aspect ratio."),
+        run: IMG(async (bm, f) => {
+          const u = v("ru"), d = +v("rd") || 300, P = x => x === "" ? null : (u == "px" ? +x : u == "in" ? +x * d : u == "cm" ? +x / 2.54 * d : +x / 25.4 * d), m = v("rm"), t = kt(f); let w = P(v("rw")), h = P(v("rh")); if (!w && !h) throw Error("Enter a width and/or a height.");
+          if (!h) h = bm.height * w / bm.width; else if (!w) w = bm.width * h / bm.height; const c = mk(w, h), x = c.getContext("2d"); x.imageSmoothingQuality = "high"; if (t == "image/jpeg") { x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height) }
+          if (m == "stretch") x.drawImage(bm, 0, 0, c.width, c.height); else { const k = (m == "fill" ? Math.max : Math.min)(c.width / bm.width, c.height / bm.height), dw = bm.width * k, dh = bm.height * k; x.drawImage(bm, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh) } return { c, t, q: .95, s: "-resized" }
+        })
+      },
+      up: {
+        sec: "img", n: "Upscale & Enhance", i: "🔍", d: "Enlarge 2×–4× with smoothing + sharpening", acc: "image/*", multi: 1, opts: sel("k", "Scale", [[2, "2×"], [3, "3×"], [4, "4×"], [1, "1× (sharpen only)"]]) + sel("sh", "Sharpen", [[.6, "Medium"], [.3, "Light"], [1, "Strong"], [0, "None"]]) + hint("Classic high-quality resampling + sharpening. It can't invent detail like AI upscalers."),
+        run: IMG(async bm => { const k = +v("k"), W = bm.width * k, H = bm.height * k; if (W * H > 6e7) throw Error("Result too large (max ~60 megapixels). Pick a smaller scale."); let c = draw(bm, "image/png"), cw = bm.width; while (cw < W) { const nw = Math.min(W, cw * 2), n = mk(nw, nw * H / W), x = n.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(c, 0, 0, n.width, n.height); c = n; cw = nw } sharpen(c, +v("sh")); return { c, t: "image/png", s: "-" + k + "x" } })
+      },
+      crp: {
+        sec: "img", n: "Crop & Shape", i: "✂️", d: "Crop by %, square, circle or rounded corners", acc: "image/*", multi: 1, opts: num("cl", "Cut from left %", 0) + num("ct", "Cut from top %", 0) + num("cr", "Cut from right %", 0) + num("cb", "Cut from bottom %", 0) + sel("sp", "Shape", [["rect", "Rectangle"], ["square", "Square (centre)"], ["circle", "Circle (PNG)"], ["round", "Rounded corners (PNG)"]]),
+        run: IMG(async (bm, f) => {
+          const L = +v("cl") / 100, T = +v("ct") / 100, R = +v("cr") / 100, B = +v("cb") / 100, sx = bm.width * L, sy = bm.height * T, w = bm.width * (1 - L - R), h = bm.height * (1 - T - B), s = v("sp"); if (w < 2 || h < 2) throw Error("Crop is too large.");
+          const sq = s == "circle" || s == "square", cw = sq ? Math.min(w, h) : w, ch = sq ? cw : h, t = s == "circle" || s == "round" ? "image/png" : kt(f), c = mk(cw, ch), x = c.getContext("2d"); if (t == "image/jpeg") { x.fillStyle = "#fff"; x.fillRect(0, 0, cw, ch) }
+          if (s == "circle") { x.beginPath(); x.arc(cw / 2, ch / 2, cw / 2, 0, 7); x.clip() } else if (s == "round") { x.beginPath(); x.roundRect(0, 0, cw, ch, Math.min(cw, ch) * .12); x.clip() }
+          x.drawImage(bm, sx + (w - cw) / 2, sy + (h - ch) / 2, cw, ch, 0, 0, cw, ch); return { c, t, q: .95, s: "-crop" }
+        })
+      },
+      rot: {
+        sec: "img", n: "Rotate & Flip", i: "🔄", d: "Rotate 90°/180°/270° or mirror", acc: "image/*", multi: 1, opts: sel("ang", "Rotate", [[0, "None"], [90, "90° clockwise"], [180, "180°"], [270, "90° counter-clockwise"]]) + sel("fl", "Flip", [["n", "None"], ["h", "Horizontal"], ["v", "Vertical"]]),
+        run: IMG(async (bm, f) => { const a = +v("ang"), sw = a % 180, c = mk(sw ? bm.height : bm.width, sw ? bm.width : bm.height), x = c.getContext("2d"), t = kt(f); if (t == "image/jpeg") { x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height) } x.translate(c.width / 2, c.height / 2); x.rotate(a * Math.PI / 180); x.scale(v("fl") == "h" ? -1 : 1, v("fl") == "v" ? -1 : 1); x.drawImage(bm, -bm.width / 2, -bm.height / 2); return { c, t, q: .95, s: "-rotated" } })
+      },
+      fx: {
+        sec: "img", n: "Effects & Border", i: "🎨", d: "Grayscale, B&W, sepia, blur, pixelate, adjust, add border", acc: "image/*", multi: 1, opts: sel("fx", "Effect", [["none", "None"], ["gray", "Grayscale"], ["bw", "Black & white"], ["sepia", "Sepia"], ["blur", "Blur"], ["pix", "Pixelate"]]) + num("br", "Brightness %", 100) + num("ct", "Contrast %", 100) + num("sa", "Saturation %", 100) + num("bd", "Border (px)", 0) + clr("bc", "Border colour", "#ffffff") + hint("Brightness/contrast/blur use browser filters; Safari on iPhone may ignore them."),
+        run: IMG(async (bm, f) => {
+          const t = kt(f), e = v("fx"), W = bm.width, H = bm.height, c = draw(bm, t), b = Math.round(+v("bd") || 0); let fl = `brightness(${v("br")}%) contrast(${v("ct")}%) saturate(${v("sa")}%)`; if (e == "gray") fl += " grayscale(1)"; if (e == "bw") fl += " grayscale(1) contrast(600%)"; if (e == "sepia") fl += " sepia(1)"; if (e == "blur") fl += ` blur(${Math.max(2, W / 150)}px)`;
+          let out = mk(W, H); const sx = out.getContext("2d"); sx.filter = fl; sx.drawImage(c, 0, 0);
+          if (e == "pix") { const k = Math.max(6, Math.round(W / 60)), sm = mk(W / k, H / k); sm.getContext("2d").drawImage(out, 0, 0, sm.width, sm.height); out = mk(W, H); const ox = out.getContext("2d"); ox.imageSmoothingEnabled = false; ox.drawImage(sm, 0, 0, W, H) }
+          if (b) { const o = mk(W + 2 * b, H + 2 * b), ox = o.getContext("2d"); ox.fillStyle = v("bc"); ox.fillRect(0, 0, o.width, o.height); ox.drawImage(out, b, b); out = o } return { c: out, t, q: .95, s: "-edited" }
+        })
+      },
+      wm: {
+        sec: "img", n: "Watermark Image", i: "💧", d: "Stamp text: centre, corner or tiled", acc: "image/*", multi: 1, opts: txt("wt", "Text", "© Your Name") + sel("wp", "Position", [["tile", "Tiled"], ["center", "Centre"], ["br", "Bottom right"]]) + num("wo", "Opacity (0.1–1)", .35, 'step="0.05" min="0.1" max="1"') + clr("wc", "Colour", "#ffffff"),
+        run: IMG(async (bm, f) => {
+          const t = kt(f), c = draw(bm, t), x = c.getContext("2d"), s = Math.max(16, c.width / 16), tx = v("wt"), p = v("wp"); x.globalAlpha = +v("wo"); x.fillStyle = v("wc"); x.font = `bold ${s}px Arial,sans-serif`; x.textBaseline = "middle";
+          if (p == "tile") { x.rotate(-Math.PI / 6); const sp = x.measureText(tx).width + s * 2; for (let yy = -c.height; yy < c.height * 2; yy += s * 3)for (let xx = -c.width; xx < c.width * 2; xx += sp)x.fillText(tx, xx, yy) } else if (p == "center") { x.textAlign = "center"; x.fillText(tx, c.width / 2, c.height / 2) } else { x.textAlign = "right"; x.fillText(tx, c.width - s / 2, c.height - s) } return { c, t, q: .95, s: "-wm" }
+        })
+      },
+      join: {
+        sec: "img", n: "Join Images", i: "🧱", d: "Stack images side by side or top to bottom", acc: "image/*", multi: 1, min: 2, opts: sel("jd", "Direction", [["h", "Side by side"], ["v", "Top to bottom"]]),
+        run: async fs => { const B = await Promise.all(fs.map(f => createImageBitmap(f))), h = v("jd") == "h", L = Math.min(...B.map(b => h ? b.height : b.width)), S = B.map(b => h ? [b.width * L / b.height, L] : [L, b.height * L / b.width]), c = mk(h ? S.reduce((a, s) => a + s[0], 0) : L, h ? L : S.reduce((a, s) => a + s[1], 0)), x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); let o = 0; B.forEach((b, i) => { h ? x.drawImage(b, o, 0, S[i][0], L) : x.drawImage(b, 0, o, L, S[i][1]); o += S[i][h ? 0 : 1] }); return ["joined.jpg", new Uint8Array(await (await tb(c, "image/jpeg", .92)).arrayBuffer())] }
+      },
+      isplit: {
+        sec: "img", n: "Split Image", i: "🔲", d: "Cut into a grid (e.g. Instagram 3×1) as ZIP", acc: "image/*", opts: num("sc", "Columns", 3) + num("sr", "Rows", 1),
+        run: async fs => { const bm = await createImageBitmap(fs[0]), C = +v("sc") || 1, R = +v("sr") || 1, z = new JSZip(), w = bm.width / C, h = bm.height / R; for (let r = 0; r < R; r++)for (let q = 0; q < C; q++) { const c = mk(w, h); c.getContext("2d").drawImage(bm, q * w, r * h, w, h, 0, 0, w, h); z.file(`part-${r + 1}-${q + 1}.jpg`, await tb(c, "image/jpeg", .92)) } return ["split-images.zip", await z.generateAsync({ type: "uint8array" })] }
+      },
+      strip: { sec: "img", n: "Remove Metadata", i: "🧹", d: "Strip EXIF/GPS data by re-encoding the image", acc: "image/*", multi: 1, run: IMG(async (bm, f) => { const t = kt(f); return { c: draw(bm, t), t, q: .95, s: "-clean" } }) },
+      ipdf: { ...TOOLS.img, sec: "img" }, pjpg: { ...TOOLS.tojpg, sec: "img" }
+    };
+    Object.assign(TOOLS, IT);
+    // ---------- Image editor (edit text inside images) ----------
+    const IFAM = ['Arial,Helvetica,sans-serif', '"Times New Roman",Times,serif', '"Courier New",monospace', 'Impact,Haettenschweiler,sans-serif'];
+    const ifc = (f, s) => `${f.i ? "italic " : ""}${f.b ? "bold " : ""}${s}px ${IFAM[f.f]}`;
+    let IE;
+    function imgEditor() {
+      $("#app").innerHTML = `<div class="panel" style="max-width:900px"><button class="back" onclick="home()">← All tools</button><h2 style="margin:0 0 12px">🪄 Image Editor</h2><div class="drop" id="dz">Click to choose an image or drop here<input type="file" id="fi" hidden accept="image/*"></div><div id="ed"></div></div>`;
+      const dz = $("#dz"), fi = $("#fi"); dz.onclick = () => fi.click(); fi.onchange = () => openIE(fi.files[0]); dz.ondragover = e => e.preventDefault(); dz.ondrop = e => { e.preventDefault(); openIE(e.dataTransfer.files[0]) }
+    }
+    async function openIE(f) {
+      if (!f) return; $("#dz").style.display = "none"; IE = { img: await createImageBitmap(f), ops: [], mode: "edit", g: 0, k: 1 };
+      $("#ed").innerHTML = `<div class="tb">${[["edit", "✏️ Edit text"], ["add", "🅰️ Add text"], ["pix", "🔳 Pixelate"], ["cover", "⬜ Erase"], ["draw", "✍️ Draw"], ["box", "▭ Box"]].map(m => `<button data-m="${m[0]}" class="${m[0] == "edit" ? "on" : ""}">${m[1]}</button>`).join("")}</div>
+ <div class="tb"><input type="color" id="icol" value="#000000" title="Text/pen colour"><label>Size <input type="number" id="isz" placeholder="auto" style="width:70px"></label><select id="ifont" style="width:auto"><option value="0">Sans</option><option value="1">Serif</option><option value="2">Mono</option><option value="3">Impact</option></select><label><input type="checkbox" id="ib"> Bold</label><label><input type="checkbox" id="ii"> Italic</label><button id="iun">↩ Undo</button><button id="ird">🔎 Read text (AI)</button></div>
+ <div class="rs" id="irs"></div>
+ <div class="stage" style="text-align:center"><div id="iw" style="position:relative;display:inline-block;max-width:100%"><canvas id="ic" style="display:block;max-width:100%;height:auto"></canvas><div id="iov"></div><div id="sel" style="position:absolute;display:none;border:2px dashed var(--ac);background:rgba(229,50,45,.12);pointer-events:none"></div></div></div>
+ <div class="tb" style="margin-top:12px"><select id="ifmt" style="width:auto"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select><button class="btn" id="isv" style="flex:1;width:auto">Save image</button></div><div id="out"></div>`;
+      const c = $("#ic"); c.width = IE.img.width; c.height = IE.img.height; IE.done = {}; redraw(); IE.lines = detectLines(c); showLines(); $("#irs").textContent = IE.lines.length ? `Found ${IE.lines.length} text line(s) — in Edit text mode click a dotted line, type, press Enter. Press “Read text (AI)” to pre-fill the existing text and auto-match its font. Add text drops a movable, resizable box.` : "No text lines auto-detected — in Edit text mode, drag a box over the text you want to change."; $("#ird").onclick = readText;
+      document.querySelectorAll(".tb [data-m]").forEach(b => b.onclick = () => { flushBox(); IE.mode = b.dataset.m; showLines(); document.querySelectorAll(".tb [data-m]").forEach(x => x.classList.toggle("on", x == b)) });
+      $("#icol").oninput = () => IE.manual = 1; $("#iun").onclick = () => { flushBox(); if (!IE.ops.length) return; const g = IE.ops[IE.ops.length - 1].g; IE.ops = IE.ops.filter(x => x.g != g); for (const k in IE.done) if (IE.done[k] == g) delete IE.done[k]; redraw() }; $("#iov").onpointerdown = idown; $("#isv").onclick = isave
+    }
+    function dop(x, c) {
+      if (x.t == "cover") { c.fillStyle = x.c; c.fillRect(x.x, x.y, x.w, x.h) } else if (x.t == "box") { c.strokeStyle = x.c; c.lineWidth = Math.max(2, IE.img.width / 300); c.strokeRect(x.x, x.y, x.w, x.h) }
+      else if (x.t == "pix") { const k = Math.max(4, Math.round(Math.min(x.w, x.h) / 8)), t = mk(x.w / k, x.h / k); t.getContext("2d").drawImage(c.canvas, x.x, x.y, x.w, x.h, 0, 0, t.width, t.height); c.imageSmoothingEnabled = false; c.drawImage(t, 0, 0, t.width, t.height, x.x, x.y, x.w, x.h); c.imageSmoothingEnabled = true }
+      else if (x.t == "text") { c.fillStyle = x.c; c.font = ifc(x.f, x.size); c.textBaseline = "alphabetic"; wrap(x.str, x.w, t => c.measureText(t).width).forEach((l, i) => c.fillText(l, x.x, x.y + x.size * .95 + i * x.size * 1.2)) }
+      else { c.strokeStyle = x.c; c.lineWidth = x.w; c.lineCap = c.lineJoin = "round"; c.beginPath(); x.pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.stroke() }
+    }
+    function redraw() { const c = $("#ic").getContext("2d"); c.drawImage(IE.img, 0, 0); IE.ops.forEach(x => dop(x, c)); if (IE.lines) showLines() }
+    function pt(e) { const r = $("#ic").getBoundingClientRect(), k = $("#ic").width / r.width; IE.k = k; return [(e.clientX - r.left) * k, (e.clientY - r.top) * k, k] }
+    function samp(o) {
+      const c = $("#ic"), x = Math.max(0, Math.floor(o.x)), y = Math.max(0, Math.floor(o.y)), w = Math.max(1, Math.min(Math.floor(o.w), c.width - x)), h = Math.max(1, Math.min(Math.floor(o.h), c.height - y)), d = c.getContext("2d").getImageData(x, y, w, h).data, R = [], G = [], B = [];
+      for (let j = 0; j < h; j++)for (let i = 0; i < w; i++)if (i < 2 || j < 2 || i >= w - 2 || j >= h - 2) { const k = (j * w + i) * 4; R.push(d[k]); G.push(d[k + 1]); B.push(d[k + 2]) }
+      const md = a => a.sort((p, q) => p - q)[a.length >> 1], bg = [md(R), md(G), md(B)]; let best = 0, tc = [0, 0, 0];
+      for (let k = 0; k < d.length; k += 4) { const m = Math.abs(d[k] - bg[0]) + Math.abs(d[k + 1] - bg[1]) + Math.abs(d[k + 2] - bg[2]); if (m > best) { best = m; tc = [d[k], d[k + 1], d[k + 2]] } } return { bg: hx(bg), col: best > 80 ? hx(tc) : "#000000" }
+    }
+    function itxt(x, top, w, size, f, c, bg, str, cb, cn, h, pl) { const k = IE.k; tbox($("#iw"), { x: x / k, y: Math.max(0, top / k), w: Math.max(80, w / k), h: Math.max((h || size * 1.4) / k, 30) }, { str, css: ifc(f, size / k), color: c, bg, plain: pl, ok: (v, r) => cb(v, { x: r.x * k, y: r.y * k, w: r.w * k, h: r.h * k }), cancel: cn }) }
+    function idown(e) {
+      flushBox(); e.preventDefault(); const [X, Y] = pt(e), m = IE.mode, iov = $("#iov"), col = $("#icol").value, F = () => ({ f: +$("#ifont").value, b: $("#ib").checked, i: $("#ii").checked });
+      if (m == "add" || m == "edit") { const ix = IE.ops.map(o => o.t == "text" && !!o.ed == (m == "edit") && X >= o.x && X <= o.x + o.w && Y >= o.y && Y <= o.y + o.h).lastIndexOf(true); if (ix >= 0) { const o = IE.ops.splice(ix, 1)[0]; redraw(); itxt(o.x, o.y, o.w, o.size, o.f, o.c, "transparent", o.str, (v, g) => { IE.ops.push({ ...o, str: v, x: g.x, y: g.y, w: g.w, h: g.h }); redraw() }, () => { IE.ops.splice(ix, 0, o); redraw() }, o.h, !!o.ed); return } }
+      if (m == "add") { const sz = +$("#isz").value || Math.round(IE.img.height / 20), f = F(); itxt(X, Y, Math.round(IE.img.width / 3), sz, f, col, "transparent", "", (v, g) => { IE.ops.push({ g: ++IE.g, t: "text", x: g.x, y: g.y, w: g.w, h: g.h, size: sz, f, c: col, str: v }); redraw() }); return }
+      const hl = m == "edit" ? IE.lines.findIndex((l, i) => !IE.done[i] && X >= l.x - 3 && X <= l.x + l.w + 3 && Y >= l.y - 3 && Y <= l.y + l.h + 3) : -1; const g = ++IE.g; let op = m == "draw" ? { g, t: "path", c: col, w: Math.max(3, IE.img.width / 250), pts: [[X, Y]] } : { g, t: m == "edit" ? "cover" : m, x: X, y: Y, w: 0, h: 0, x0: X, y0: Y, c: col };
+      if (m == "draw" || m == "box") IE.ops.push(op); iov.setPointerCapture(e.pointerId);
+      iov.onpointermove = ev => { const [x, y, k] = pt(ev); if (op.t == "path") { op.pts.push([x, y]); redraw() } else { op.x = Math.min(x, op.x0); op.y = Math.min(y, op.y0); op.w = Math.abs(x - op.x0); op.h = Math.abs(y - op.y0); if (m == "box") redraw(); else { const s = $("#sel").style; s.display = "block"; s.left = op.x / k + "px"; s.top = op.y / k + "px"; s.width = op.w / k + "px"; s.height = op.h / k + "px" } } };
+      iov.onpointerup = () => {
+        iov.onpointermove = iov.onpointerup = null; $("#sel").style.display = "none"; const rm = () => { IE.ops.splice(IE.ops.indexOf(op), 1); redraw() };
+        if (op.t == "path") { if (op.pts.length < 2) rm(); else redraw(); return } if (op.w < 4 || op.h < 4) { if (m == "box") { rm(); return } if (m == "edit") { if (hl >= 0) { editLine(hl); return } op.w = Math.round(IE.img.width / 4); op.h = Math.round(IE.img.height / 16) } else return } if (m == "box") return redraw();
+        if (m == "pix") { IE.ops.push(op); return redraw() } const sm = samp(op); op.c = sm.bg; if (m == "cover") { IE.ops.push(op); return redraw() }
+        const sz = +$("#isz").value || Math.round(op.h * .82), f = F(), tc = IE.manual ? col : sm.col;
+        itxt(op.x, op.y, op.w, sz, f, tc, sm.bg, "", (v, g) => { IE.ops.push(op, { g: op.g, t: "text", x: g.x, y: g.y, w: g.w, h: g.h, size: sz, f, c: tc, str: v, ed: 1 }); redraw() }, null, op.h, 1)
+      }
+    }
+    function showLines() {
+      const o = $("#iov"); if (!o || !IE.lines) return; o.querySelectorAll(".ib").forEach(e => e.remove()); if (IE.mode != "edit") return; const W = IE.img.width, H = IE.img.height;
+      IE.lines.forEach((l, i) => { if (IE.done[i]) return; const d = document.createElement("div"); d.className = "ib"; d.style.cssText = `left:${l.x / W * 100}%;top:${l.y / H * 100}%;width:${l.w / W * 100}%;height:${l.h / H * 100}%;pointer-events:none`; o.append(d) })
+    }
+    // automatic text-line detection: edge map -> horizontal smoothing -> connected components -> merge into lines
+    function detectLines(src) {
+      const f = Math.min(1, 1100 / Math.max(src.width, src.height)), W = Math.round(src.width * f), H = Math.round(src.height * f), c = mk(W, H), cx = c.getContext("2d"); cx.drawImage(src, 0, 0, W, H);
+      const d = cx.getImageData(0, 0, W, H).data, g = new Float32Array(W * H), m = new Uint8Array(W * H); for (let i = 0; i < W * H; i++)g[i] = d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11;
+      for (let y = 0; y < H - 1; y++)for (let i = 0; i < W - 1; i++) { const k = y * W + i; if (Math.abs(g[k] - g[k + 1]) + Math.abs(g[k] - g[k + W]) > 50) m[k] = 1 }
+      const G = Math.max(5, Math.round(W * .01)); for (let y = 0; y < H; y++) { let last = -1e9; for (let i = 0; i < W; i++) { if (m[y * W + i]) { if (i - last <= G) for (let j = last + 1; j < i; j++)m[y * W + j] = 1; last = i } } }
+      const m2 = new Uint8Array(m); for (let y = 2; y < H - 2; y++)for (let i = 0; i < W; i++) { const k = y * W + i; if (!m[k] && ((m[k - W] && m[k + W]) || (m[k - W] && m[k + 2 * W]) || (m[k - 2 * W] && m[k + W]))) m2[k] = 1 }
+      const lab = new Uint8Array(W * H), bx = [], st = [];
+      for (let s0 = 0; s0 < W * H; s0++) {
+        if (!m2[s0] || lab[s0]) continue; let x0 = W, x1 = 0, y0 = H, y1 = 0, n = 0; st.push(s0); lab[s0] = 1;
+        while (st.length) {
+          const k = st.pop(), y = (k / W) | 0, i = k - y * W; n++; if (i < x0) x0 = i; if (i > x1) x1 = i; if (y < y0) y0 = y; if (y > y1) y1 = y;
+          if (i > 0 && m2[k - 1] && !lab[k - 1]) { lab[k - 1] = 1; st.push(k - 1) } if (i < W - 1 && m2[k + 1] && !lab[k + 1]) { lab[k + 1] = 1; st.push(k + 1) } if (y > 0 && m2[k - W] && !lab[k - W]) { lab[k - W] = 1; st.push(k - W) } if (y < H - 1 && m2[k + W] && !lab[k + W]) { lab[k + W] = 1; st.push(k + W) }
+        }
+        const bw = x1 - x0 + 1, bh = y1 - y0 + 1; if (bh >= 5 && bh <= H * .3 && bw >= bh * .7 && n / (bw * bh) > .15) bx.push({ x: x0, y: y0, w: bw, h: bh })
+      }
+      let ch = true; while (ch) {
+        ch = false; for (let a = 0; a < bx.length && !ch; a++)for (let b = a + 1; b < bx.length && !ch; b++) {
+          const p = bx[a], q = bx[b], ov = Math.min(p.y + p.h, q.y + q.h) - Math.max(p.y, q.y), gap = Math.max(p.x, q.x) - Math.min(p.x + p.w, q.x + q.w), mx = Math.max(p.h, q.h), mn = Math.min(p.h, q.h);
+          if (ov > .6 * mn && gap < Math.max(mn * 2.5, mx * .8)) { const x0 = Math.min(p.x, q.x), y0 = Math.min(p.y, q.y); bx[a] = { x: x0, y: y0, w: Math.max(p.x + p.w, q.x + q.w) - x0, h: Math.max(p.y + p.h, q.y + q.h) - y0 }; bx.splice(b, 1); ch = true }
+        }
+      }
+      return bx.filter(b => b.w >= b.h * 1.2).sort((p, q) => p.y - q.y || p.x - q.x).slice(0, 80).map(b => ({ x: b.x / f, y: b.y / f, w: b.w / f, h: b.h / f }))
+    }
+    // pick the font whose width-fit size also reproduces the measured text height
+    function fitFont(txt, w, h, ai) {
+      const c = mk(10, 10).getContext("2d"); let best = null; const fams = ai ? (ai.mono ? [2] : ai.serif ? [1] : [0, 3]) : [0, 1, 2, 3], bolds = ai && ai.bold != null ? [+!!ai.bold] : [0, 1];
+      for (const fam of fams) for (const b of bolds) { const f = { f: fam, b, i: ai && ai.italic ? 1 : 0 }; c.font = ifc(f, 100); const m = c.measureText(txt), k = w / Math.max(1, m.width), hh = (m.actualBoundingBoxAscent + m.actualBoundingBoxDescent) * k, err = Math.abs(hh - h) / h; if (!best || err < best.err) best = { f, size: 100 * k, err, asc: m.actualBoundingBoxAscent * k } } return best
+    }
+    function editLine(i) {
+      flushBox(); const L = IE.lines[i], pd = Math.max(2, Math.round(L.h * .12)), cv = { x: Math.max(0, L.x - pd), y: Math.max(0, L.y - pd), w: L.w + 2 * pd, h: L.h + 2 * pd }, sm = samp(cv), txt = L.txt || "", W = IE.img.width;
+      const fit = txt ? fitFont(txt, L.w, L.h, L.ai) : { f: { f: 0, b: 0, i: 0 }, size: L.h / .9, asc: L.h * .78 }, sz = fit.size, top = L.y + fit.asc - sz * .95, col = IE.manual ? $("#icol").value : sm.col;
+      itxt(L.x, top, Math.min(W - L.x, Math.max(L.w * 1.5, 300)), sz, fit.f, col, sm.bg, txt, (v, g) => { const gg = ++IE.g; IE.ops.push({ g: gg, t: "cover", x: cv.x, y: cv.y, w: cv.w, h: cv.h, c: sm.bg }, { g: gg, t: "text", x: L.x, y: top, w: W - L.x - 4, h: sz * 1.2, size: sz, f: fit.f, c: col, str: v, ed: 1 }); IE.done[i] = gg; redraw() }, null, sz * 1.25, 1)
+    }
+    async function readText() {
+      const st = $("#irs"); let sm = null; try { sm = await claude.use("sample") } catch (e) { }
+      if (!sm) { st.textContent = "Auto-read isn't available in this view. You can still click a dotted line and type the new text."; return }
+      const lim = await sm.limits().catch(() => null); if (!lim || !lim.images) { st.textContent = "This view can't send images for reading. Click a dotted line and type instead."; return }
+      if (!IE.lines.length) { st.textContent = "No text lines detected to read."; return }
+      const src = $("#ic"), rows = IE.lines.map(l => { const s = Math.min(1000 / (l.w + 6), Math.max(1, 36 / l.h)); return { l, s, h: Math.round((l.h + 6) * s) + 14 } }), sh = mk(1100, rows.reduce((a, r) => a + r.h, 0)), x = sh.getContext("2d");
+      x.fillStyle = "#fff"; x.fillRect(0, 0, sh.width, sh.height); let y = 0;
+      rows.forEach((r, i) => { const l = r.l, sx = Math.max(0, l.x - 3), sy = Math.max(0, l.y - 3), sw = Math.min(src.width - sx, l.w + 6), sh2 = Math.min(src.height - sy, l.h + 6); x.fillStyle = "#000"; x.font = "bold 22px Arial"; x.textBaseline = "middle"; x.fillText(String(i + 1), 6, y + r.h / 2); x.drawImage(src, sx, sy, sw, sh2, 60, y + 7, sw * r.s, sh2 * r.s); x.fillStyle = "#ccc"; x.fillRect(0, y + r.h - 1, sh.width, 1); y += r.h });
+      st.textContent = "Reading text…";
+      try {
+        const data = await sm.json('The image is a stack of cropped text lines taken from one picture. Each row starts with a number badge on the left, followed by the cropped line. Return a JSON array with one object per row: [{"n":1,"text":"exact text of the line","serif":false,"mono":false,"bold":false,"italic":false}]. Transcribe exactly, keeping case, punctuation and numbers. serif/mono/bold/italic describe the typeface of that line. Return only JSON.', { images: await tb(sh, "image/jpeg", .9), modelTier: "quick" });
+        let n = 0; (Array.isArray(data) ? data : []).forEach(d => { const l = IE.lines[d.n - 1]; if (l && typeof d.text == "string") { l.txt = d.text; l.ai = d; n++ } }); st.textContent = `Read ${n} line(s). Click any dotted line — its text is pre-filled and the font/size are auto-matched. Edit it and press Enter.`
+      }
+      catch (e) { st.textContent = "Couldn't read the text: " + (e.message || e.code || e) }
+    }
+    async function isave() {
+      flushBox(); const o = $("#out"), t = $("#ifmt").value, c = $("#ic"); let src = c; if (t == "image/jpeg") { src = mk(c.width, c.height); const x = src.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(c, 0, 0) }
+      const b = await tb(src, t, .95); finish(o, "edited." + ext(t), new Uint8Array(await b.arrayBuffer()))
+    }
+    function finish(o, name, data) {
+      o.innerHTML = `<div class="msg ok">✅ Done! ${name} · ${kb(data.length)}<br><br><button class="btn" id="dl">⬇ Download ${name}</button></div>`;
+      $("#dl").onclick = async () => { const d = await claude.use("downloads"); if (!d) { o.insertAdjacentHTML("beforeend", `<div class="msg">Downloads aren't available in this view.</div>`); return } try { await d.save({ filename: name, data }) } catch (e) { if (e.code != "declined") o.insertAdjacentHTML("beforeend", `<div class="msg">Could not save: ${e.message}</div>`) } }
+    }
+    home();
+  </script>
+</body>
+
+</html>
